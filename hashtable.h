@@ -20,7 +20,7 @@ struct hashTable
 };
 
 // create a hashtable - return 0 on failure
-int createHashTable(unsigned int size, struct hashTable **hashTable);
+int createHashTable(unsigned int size, struct hashTable *hashTable);
 
 // destroy a hashtable - return 0 on failure
 int destroyHashTable(struct hashTable **ht);

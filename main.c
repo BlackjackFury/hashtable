@@ -12,7 +12,7 @@ int main(int argc, const char * argv[])
     struct hashTable *ht;
     char *value;
     
-    createHashTable(100, &ht);
+    createHashTable(100, ht);
 
 
 		FILE *mf; 

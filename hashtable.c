@@ -9,11 +9,10 @@
 
 
 // create a hashtable - return 0 on failure
-int createHashTable(unsigned int size, struct hashTable **hashTable)
+int createHashTable(unsigned int size, struct hashTable *hashTable)
 {
-    struct hashTable *ht;
     struct hLinkedList **lists;
-    
+    printf("DONE\n");
     if(size <= 0)
     {
         // bad input
@@ -21,28 +20,27 @@ int createHashTable(unsigned int size, struct hashTable **hashTable)
     }
     
     // create the hashtable
-    if(!(ht = (struct hashTable*)malloc(sizeof(struct hashTable))))
+    if(!(hashTable = (struct hashTable*)malloc(sizeof(struct hashTable))))
     {
-        *hashTable = NULL;
+	 printf("Error\n");
         return(0);
     }
-    
+    printf("!\n");
     // create the linked lists
-    if(!(lists = (struct hLinkedList**)malloc(sizeof(struct hLinkedList *) * size)))
+    if(!(lists = (struct hLinkedList**)malloc(sizeof(struct hLinkedList ) * size)))
     {
-        free(ht);
-        *hashTable = NULL;
+ 	printf("error\n");
+        free(hashTable);
         return(0);
     }
+     printf("!\n");
+    hashTable->size = size;
+    hashTable->lists = lists;
     
-    ht->size = size;
-    ht->lists = lists;
-    
-    *hashTable = ht;
     return(1);
 }
 
-// destroy a hashtable - return 0 on failure
+
 int destroyHashTable(struct hashTable **ht)
 {
     struct hashTable *hashTable;
@@ -96,14 +94,14 @@ int addToHashTable(struct hashTable *hashTable, int key, char *value)
         if(!(list = (struct hLinkedList *)malloc(sizeof(struct hLinkedList))))
         {
             // couldn't get the memory
-            return(0);
+            return(-1);
         }
         *(hashTable->lists + offset) = list;
         
         list->key = key;
         list->value = value;
         list->next = NULL;
-        return(1);
+        return(-1);
     }
     
     // walk the list
