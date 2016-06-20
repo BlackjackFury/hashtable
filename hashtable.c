@@ -9,35 +9,36 @@
 
 
 // create a hashtable - return 0 on failure
-int createHashTable(unsigned int size, struct hashTable *hashTable)
+struct hashTable * createHashTable(unsigned int size)
 {
+  struct hashTable * hashTable;
     struct hLinkedList **lists;
-    printf("DONE\n");
+   
     if(size <= 0)
-    {
+          {
         // bad input
         return(0);
     }
     
     // create the hashtable
-    if(!(hashTable = (struct hashTable*)malloc(sizeof(struct hashTable))))
+    if(!(hashTable = (struct hashTable*)calloc(1,sizeof(struct hashTable))))
     {
 	 printf("Error\n");
         return(0);
     }
-    printf("!\n");
+  
     // create the linked lists
-    if(!(lists = (struct hLinkedList**)malloc(sizeof(struct hLinkedList ) * size)))
+    if(!(lists = (struct hLinkedList**)calloc(1,sizeof(struct hLinkedList ) * size)))
     {
  	printf("error\n");
         free(hashTable);
         return(0);
     }
-     printf("!\n");
+   
     hashTable->size = size;
     hashTable->lists = lists;
     
-    return(1);
+    return(hashTable);
 }
 
 
@@ -77,42 +78,40 @@ int destroyHashTable(struct hashTable **ht)
 // add a string to the hashtable - return 0 on failure
 int addToHashTable(struct hashTable *hashTable, int key, char *value)
 {
-    int hc;
-    int offset;
     struct hLinkedList *list, *prev;
     
     // create hashcode
-    hc = key;
+	key = key % 100;
     
     // pick the linked list
-    offset = hc % hashTable->size;
-    list = *(hashTable->lists + offset);
+    list = hashTable->lists[key];
     
     if(!list)
     {
+	printf("Enter\n");
         // this list doesn't exist yet - create it
         if(!(list = (struct hLinkedList *)malloc(sizeof(struct hLinkedList))))
         {
             // couldn't get the memory
             return(-1);
         }
-        *(hashTable->lists + offset) = list;
+        *(hashTable->lists + key) = list;
         
         list->key = key;
         list->value = value;
         list->next = NULL;
-        return(-1);
+        return(0);
     }
     
     // walk the list
     prev = list;
     while(list)
     {
-        if(0 == strcmp(list->key, key))
+        if(key = list->key)
         {
             // already exists in the list - update the value
             list->value = value;
-            return(1);
+            return(-1);
         }
         
         prev = list;
@@ -123,14 +122,14 @@ int addToHashTable(struct hashTable *hashTable, int key, char *value)
     if(!(list = (struct hLinkedList *)malloc(sizeof(struct hLinkedList))))
     {
         // couldn't get the memory
-        return(0);
+        return(-1);
     }
     list->key = key;
     list->value = value;
     list->next = NULL;
     prev->next = list;
     
-    return(1);
+    return(0);
 }
 
 

@@ -12,7 +12,7 @@ int main(int argc, const char * argv[])
     struct hashTable *ht;
     char *value;
     
-    createHashTable(100, ht);
+    ht = createHashTable(100);
 
 
 		FILE *mf; 
@@ -24,7 +24,7 @@ int main(int argc, const char * argv[])
 	
 	int key = 0;
 	int i = 0 ;
-	mf=fopen(argv[2],"r");
+	mf=fopen(argv[1],"r");
 
 	while (fscanf (mf, "%s", word) != EOF)
 	{
@@ -46,7 +46,7 @@ int main(int argc, const char * argv[])
 		key = key/SIZE;
 	addToHashTable(ht, key, word);
 
-	printf("%s %d %d\n", word, num, key);
+	//printf("%s %d %d\n", word, num, key);
 	
 	};
 	fclose(mf);
