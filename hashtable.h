@@ -7,6 +7,7 @@
 // linked list
 struct hLinkedList
 {
+	int num;
     int key;
     char *value;
     struct hLinkedList *next;

@@ -29,7 +29,7 @@ int main(int argc, const char * argv[])
 	while (fscanf (mf, "%s", word) != EOF)
 	{
 
-	num = 0;
+		num = 0;
 		i = 0;
   		key = 0;
 

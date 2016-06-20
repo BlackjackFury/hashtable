@@ -3,9 +3,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <strings.h>
+#include <string.h>
 #include "hashtable.h"
 
-// build the hash code for the input string
 
 
 // create a hashtable - return 0 on failure
@@ -42,53 +42,25 @@ struct hashTable * createHashTable(unsigned int size)
 }
 
 
-int destroyHashTable(struct hashTable **ht)
-{
-    struct hashTable *hashTable;
-    struct hLinkedList *list;
-    struct hLinkedList *tempList;
-    int i = 0;
-    hashTable = *ht;
-    if(NULL == hashTable)
-    {
-        return(1);
-    }
-    
-    for(i=0; i<hashTable->size; i++)
-    {
-        list = *(hashTable->lists + i);
-        while(list)
-        {
-            // keep track of this list
-            tempList = list;
-            
-            // advance for looping
-            list = list->next;
-            
-            // clean
-            free(tempList);
-        }
-    }
-    free(hashTable->lists);
-    free(hashTable);
-    *ht = NULL;
-    return(1);
-}
 
 // add a string to the hashtable - return 0 on failure
-int addToHashTable(struct hashTable *hashTable, int key, char *value)
+int addToHashTable(struct hashTable *hashTable, int key, char *val)
 {
     struct hLinkedList *list, *prev;
+    char *value;
     
+    value  = malloc(strlen(val));
+    strcpy(value,val);
+
     // create hashcode
-	key = key % 100;
+    key = key % 100;
     
     // pick the linked list
     list = hashTable->lists[key];
     
     if(!list)
     {
-	printf("Enter\n");
+	
         // this list doesn't exist yet - create it
         if(!(list = (struct hLinkedList *)malloc(sizeof(struct hLinkedList))))
         {
@@ -98,6 +70,7 @@ int addToHashTable(struct hashTable *hashTable, int key, char *value)
         *(hashTable->lists + key) = list;
         
         list->key = key;
+		list->num = 0;
         list->value = value;
         list->next = NULL;
         return(0);
@@ -109,6 +82,10 @@ int addToHashTable(struct hashTable *hashTable, int key, char *value)
     {
         if(key = list->key)
         {
+		if (strcmp(value,list->value))
+			{
+				list->num++;
+			}		
             // already exists in the list - update the value
             list->value = value;
             return(-1);
@@ -125,6 +102,7 @@ int addToHashTable(struct hashTable *hashTable, int key, char *value)
         return(-1);
     }
     list->key = key;
+	list->num = 0;
     list->value = value;
     list->next = NULL;
     prev->next = list;
@@ -136,19 +114,19 @@ int addToHashTable(struct hashTable *hashTable, int key, char *value)
 // print all keys and values in a hashtable
 int printAllKeysAndValues(struct hashTable *hashTable)
 {
-    struct hLinkedList *list;
-    int i=0;
     if(NULL == hashTable)
     {
         return(0);
     }
     
+    struct hLinkedList *list;
+    int i;
     for(i=0; i<hashTable->size; i++)
     {
-        list = *(hashTable->lists + i);
+        list = hashTable->lists[i];
         while(list)
         {
-            printf("%d -> %s\n", list->key, list->value);
+            printf("%d -> %s - %d\n", list->key, list->value, list->num);
             list = list->next;
         }
     }
